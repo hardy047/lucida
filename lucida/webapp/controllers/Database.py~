@@ -1,9 +1,9 @@
 import hashlib, uuid
 from pymongo import MongoClient
 from base64 import b64encode
-from Utilities import log
 import os
-import Config
+from commandcenterlib import Config
+from commancenterlib.Utilities import log
 from Memcached import memcached
 
 

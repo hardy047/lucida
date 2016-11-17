@@ -4,7 +4,7 @@ import hashlib, datetime
 from AccessManagement import login_required
 from Database import database 
 from ThriftClient import thrift_client
-from Utilities import log, check_image_extension, check_text_input
+from commandcenterlib.utilities import log, check_image_extension, check_text_input
 
 
 learn = Blueprint('learn', __name__, template_folder='templates')

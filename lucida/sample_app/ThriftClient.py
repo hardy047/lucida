@@ -5,9 +5,8 @@ from thrift.transport import TSocket
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
 
-from Utilities import log
-from Database import database
-import Config
+from commandcenterlib import config
+from commandcenterlib.utilities import log
 import os
 import sys
 reload(sys)  
@@ -42,7 +41,7 @@ class ThriftClient(object):
 		return LucidaService.Client(protocol), transport
 
 	def learn_image(self, LUCID, image_type, image_data, image_id):
-		for service in Config.Service.LEARNERS['image']: # add concurrency?
+		for service in config.Service.LEARNERS['image']: # add concurrency?
 			knowledge_input = self.create_query_input(
 				image_type, image_data, [image_id])
 			client, transport = self.get_client_transport(service)
@@ -52,7 +51,7 @@ class ThriftClient(object):
 			transport.close()
 	
 	def learn_text(self, LUCID, text_type, text_data, text_id):
-		for service in Config.Service.LEARNERS['text']: # add concurrency?
+		for service in config.Service.LEARNERS['text']: # add concurrency?
 			knowledge_input = self.create_query_input(
 				text_type, text_data, [text_id])
 			client, transport = self.get_client_transport(service)
@@ -86,4 +85,4 @@ class ThriftClient(object):
 		return ' '.join(result)
 
 
-thrift_client = ThriftClient(Config.SERVICES)	
+thrift_client = ThriftClient(config.SERVICES)	

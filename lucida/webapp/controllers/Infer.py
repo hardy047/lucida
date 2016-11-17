@@ -1,9 +1,16 @@
 from flask import *
+
 from AccessManagement import login_required
 from ThriftClient import thrift_client
-from QueryClassifier import query_classifier
-from Utilities import log, check_image_extension
+from commandcenterlib.query_classifier import query_classifier
+from commandcenterlib.utilities import log, check_image_extension
+
 import os
+import httplib2
+import urllib
+import string 
+import random
+
 
 infer = Blueprint('infer', __name__, template_folder='templates')
 
@@ -39,6 +46,7 @@ def infer_route():
 				options['result'] = thrift_client.infer(session['username'], 
 					services_needed, speech_input, upload_file.read()
 					if upload_file else None)
+                                options['result_audio'] = get_audio(options['result'])
 				log('Result ' + options['result'])
 				# Check if Calendar service is needed.
 				# If so, JavaScript needs to receive the parsed dates.
@@ -56,3 +64,39 @@ def infer_route():
 		return render_template('infer.html', **options)
 	# Display.
 	return render_template('infer.html', **options)
+
+def get_audio(input_text):
+    mary_host = "localhost"
+    mary_port = "59125"
+    query_hash = {"INPUT_TEXT":input_text,
+              "INPUT_TYPE":"TEXT", # Input text
+              "LOCALE":"en_US",
+              "VOICE":"cmu-slt-hsmm", # Voice informations  (need to be compatible)
+              "OUTPUT_TYPE":"AUDIO",
+              "AUDIO":"WAVE", # Audio informations (need both)
+              }
+    query = urllib.urlencode(query_hash)
+    h_mary = httplib2.Http()
+    resp, content = h_mary.request("http://%s:%s/process?" % (mary_host, mary_port), "POST", query)
+    if (resp["content-type"] == "audio/x-wav"):
+        # Write the wav file.
+        clean_voice_dir()
+        filename = id_generator() + '.wav'
+        filepath = 'static/music/' + filename
+        f = open(filepath, "wb")
+        f.write(content)
+        f.close()
+    return filename
+
+
+def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
+def clean_voice_dir():
+    for f in os.listdir("./static/music"):
+        file_path = os.path.join("./static/music", f)
+        try:
+            os.remove(file_path)
+        except Exception as e:
+            pass
+

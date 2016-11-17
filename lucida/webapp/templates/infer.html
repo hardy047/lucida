@@ -113,7 +113,10 @@
 		<pre id="log"></pre>
 	</div>
 </div>
-
+<audio autoplay>
+  <source src="static/music/{{result_audio}}" type="audio/wav">
+Your browser does not support the audio element.
+</audio>
 <script src="{{ url_for('static', filename='js/dictate.js')}}"></script>
 <script src="{{ url_for('static', filename='js/recorder.js')}}"></script>
 <script src="{{ url_for('static', filename='js/recorderWorker.js')}}"></script>
@@ -122,7 +125,7 @@
 <script type="text/javascript">
 var speakable = "{{ result }}";
 if (speakable !== "" && speakable !== "None") {
-	textToVoice("{{ result }}");
+	 
 }
 </script>
 {% endblock %}
