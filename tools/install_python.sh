@@ -16,4 +16,5 @@ source python_2_7_9/bin/activate
 pip install --upgrade distribute
 pip install --upgrade pip
 pip install -r python_requirements.txt
+pip install -e ../lucida/commandcenter/
 deactivate

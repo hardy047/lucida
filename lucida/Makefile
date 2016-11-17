@@ -1,3 +1,3 @@
-SUBDIRS=commandcenter imagematching questionanswering calendar speechrecognition djinntonic webapp
+SUBDIRS=commandcenter questionanswering calendar webapp
 
 include ../Makefile.common
