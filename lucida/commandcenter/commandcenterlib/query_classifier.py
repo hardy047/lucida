@@ -24,10 +24,10 @@ import config
 class DummyClassifier(object):
 	def __init__(self, query_class_name_in):
 		self.query_class_name = query_class_name_in
-		
+
 	def predict(self, speech_input):
 		return [self.query_class_name]
-	
+
 class QueryClassifier(object):
 	# Constructor.
 	def __init__(self, TRAIN_OR_LOAD, CLASSIFIER_DESCRIPTIONS_IN):
@@ -35,7 +35,7 @@ class QueryClassifier(object):
 		self.classifiers = {}
 		# Each input type has its own classifier.
 		for input_type in self.CLASSIFIER_DESCRIPTIONS:
-			# query_classes represents all the possible classification outcomes 
+			# query_classes represents all the possible classification outcomes
 			# and their needed services for a given input type.
 			if TRAIN_OR_LOAD == 'train':
 				self.classifiers[input_type] = self.train(input_type,
@@ -48,11 +48,11 @@ class QueryClassifier(object):
 					'TRAIN_OR_LOAD must be either "train" or "load"')
 		log('@@@@@ Summary of classifiers:')
 		log(str(self.classifiers))
-	
+
 	def train(self, input_type, query_classes):
 		log('********************** ' + input_type + ' **********************')
 		current_dir = os.path.abspath(os.path.dirname(__file__))
-		# If there is no or only one possible outcomes for the input type, 
+		# If there is no or only one possible outcomes for the input type,
 		# there is no need to train any classifier.
 		if len(query_classes) <= 1:
 			return DummyClassifier(query_classes.keys()[0])
@@ -75,7 +75,7 @@ class QueryClassifier(object):
 		pipeline = Pipeline([
 		('count_vectorizer',   CountVectorizer(ngram_range = (1, 2))),
 		#     ('classifier',         PassiveAggressiveClassifier())
-		('classifier',         LinearSVC()) 
+		('classifier',         LinearSVC())
 		])
 		# Train and k-fold cross-validate. Introduce randomness.
 		data = data.reindex(numpy.random.permutation(data.index))
@@ -89,7 +89,7 @@ class QueryClassifier(object):
 			pipeline.fit(train_text, train_y)
 			predictions = pipeline.predict(test_text)
 			score = f1_score(test_y, predictions,
-							 pos_label=None if len(query_classes) == 2 else 1,
+							 pos_label=None if len(query_classes) == 3 else 1,
 							 average='weighted')
 			scores.append(score)
 		log('Total documents classified:' + str(len(data)))
@@ -102,10 +102,10 @@ class QueryClassifier(object):
 			log('Saving model for ' + input_type)
 			cPickle.dump(pipeline, fid)
 		return pipeline
-	
+
 	def load(self, input_type, query_classes):
 		current_dir = os.path.abspath(os.path.dirname(__file__))
-		# If there is no or only one possible outcomes for the input type, 
+		# If there is no or only one possible outcomes for the input type,
 		# there is no need to train any classifier.
 		if len(query_classes) <= 1:
 			return DummyClassifier(query_classes.keys()[0])
@@ -118,7 +118,7 @@ class QueryClassifier(object):
 		except IOError as e:
 			print e
 			exit(1)
-			
+
 	def predict(self, speech_input, image_input):
 		input_type = ''
 		if speech_input:
@@ -130,7 +130,7 @@ class QueryClassifier(object):
 			if image_input:
 				input_type = 'image'
 			else:
-				raise RuntimeError('Text and image cannot be both empty')      
+				raise RuntimeError('Text and image cannot be both empty')
 		# Convert speech_input to a single-element list.
 		class_predicted = self.classifiers[input_type].predict([speech_input])
 		class_predicted = class_predicted[0] # ndarray to string
@@ -140,4 +140,4 @@ class QueryClassifier(object):
 
 query_classifier = QueryClassifier(config.TRAIN_OR_LOAD,
 	config.CLASSIFIER_DESCRIPTIONS)
-	
+

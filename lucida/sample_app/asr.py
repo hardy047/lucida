@@ -1,4 +1,5 @@
 import speech_recognition as sr
+import recognizer as recog
 import pyaudio
 import wave
 import httplib2
@@ -10,8 +11,8 @@ from ThriftClient import thrift_client
 from commandcenterlib.query_classifier import query_classifier
 from commandcenterlib.utilities import log, check_image_extension
 
-chunk = 2048
- 
+chunk = 1024
+
 def get_audio(input_text):
     mary_host = "localhost"
     mary_port = "59125"
@@ -35,27 +36,27 @@ def get_audio(input_text):
 
 def say(speech_input):
     os.system("aplay " + speech_input)
-    #f = wave.open(speech_input,"rb")  
-    #instantiate PyAudio  
-    #p = pyaudio.PyAudio()  
-    #open stream  
-    #stream = p.open(format = p.get_format_from_width(f.getsampwidth()),  
-    #                channels = f.getnchannels(),  
-    #                rate = f.getframerate(),  
-    #                output = True)  
-    #read data  
-    #data = f.readframes(chunk)  
+    #f = wave.open(speech_input,"rb")
+    #instantiate PyAudio
+    #p = pyaudio.PyAudio()
+    #open stream
+    #stream = p.open(format = p.get_format_from_width(f.getsampwidth()),
+    #                channels = f.getnchannels(),
+    #                rate = f.getframerate(),
+    #                output = True)
+    #read data
+    #data = f.readframes(chunk)
 
-    #paly stream  
-    #while data != '':  
-    #    stream.write(data)  
-    #    data = f.readframes(chunk)  
+    #paly stream
+    #while data != '':
+    #    stream.write(data)
+    #    data = f.readframes(chunk)
 
-    #stop stream  
-    #stream.stop_stream()  
-    #stream.close()  
+    #stop stream
+    #stream.stop_stream()
+    #stream.close()
 
-    #close PyAudio  
+    #close PyAudio
     #p.terminate()
 
 def listening(recognizer, audio):
@@ -83,6 +84,6 @@ with m as source:
 stop_listening = r.listen_in_background(m, listening)
 # `stop_listening` is now a function that, when called, stops background listening
 
-for _ in range(50): time.sleep(0.1) # we're still listening even though the main thread is doing other things
-stop_listening() # calling this function requests that the background listener stop listening
+#for _ in range(50): time.sleep(0.1) # we're still listening even though the main thread is doing other things
+#stop_listening() # calling this function requests that the background listener stop listening
 while True: time.sleep(0.1)

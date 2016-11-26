@@ -7,7 +7,7 @@ wget http://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz
 mkdir localpython2_7_9
 tar -zxvf Python-2.7.9.tgz
 cd Python-2.7.9
-./configure --prefix=$(pwd)/../localpython2_7_9
+./configure --prefix=$(pwd)/../localpython2_7_9 --enable-unicode=ucs4
 make
 make install
 cd ../

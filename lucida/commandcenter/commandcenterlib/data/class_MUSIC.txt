@@ -1,0 +1,7 @@
+Play some music.
+Play next song.
+Play previous song.
+Increase the volume.
+Decrease the volume.
+Pause the music.
+Resume the music.

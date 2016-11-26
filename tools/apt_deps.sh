@@ -27,6 +27,7 @@ apt-get install -y zlib1g-dev \
                    libboost-all-dev \
                    libevent-dev \
                    libdouble-conversion-dev \
+                   libdbus-glib-1-dev \
                    libtool \
                    liblz4-dev \
                    liblzma-dev \
@@ -70,7 +71,7 @@ apt-get install -y zlib1g-dev \
                    python-gobject \
                    python-gobject-2 \
                    vim \
-                   memcached
+                   memcached \
+                   libsqlite3-dev
 pip install --upgrade distribute
 pip install --upgrade pip
-pip install -r python_requirements.txt
