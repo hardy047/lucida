@@ -15,19 +15,32 @@ class ComamndProcessor(object):
 
     def process(self, data):
         tags = nltk.pos_tag(data.split())
-        command = None
+        vb = None
+        rb = None
 
         for tag in tags:
             if tag[1] == 'VB':
-                command = tag[0]
+                vb = tag[0].lower()
+            elif tag[1] == 'RB':
+                rb = tag[0].lower()
 
-        if command:
-            if command.lower() == 'play':
-                return self.play()
-            elif command.lower() == 'stop':
+        if vb:
+            if vb == 'play':
+                if rb:
+                    if rb == 'next':
+                        return self.next()
+                    elif rb == 'previous':
+                        return self.prev()
+                else:
+                    return self.play()
+            elif vb == 'stop':
                 return self.stop()
-            elif command.lower() == 'pause':
+            elif vb == 'pause' or 'resume':
                 return self.pause()
+            elif vb == 'increase':
+                return self.increase_vol()
+            elif vb == 'decrease':
+                return self.decrease_vol()
 
         return NOT_FOUND
 
@@ -53,9 +66,44 @@ class ComamndProcessor(object):
 
     def pause(self):
         try:
-            self._player.pause()
+            self._player.toggle()
             return OK
         except Exception as e:
-            pritn(e)
+            print(e)
             return NOT_FOUND
 
+    def next(self):
+        try:
+            self._player.next()
+            return OK
+        except Exception as e:
+            print(e)
+            return NOT_FOUND
+
+    def prev(self):
+        try:
+            self._player.prev()
+            return OK
+        except Exception as e:
+            print(e)
+            return NOT_FOUND
+
+    def increase_vol(self):
+        try:
+            self._player.set_volume(
+                self._player.get_volume() + 1
+            )
+            return OK
+        except Exception as e:
+            print(e)
+            return NOT_FOUND
+
+    def decrease_vol(self):
+        try:
+            self._player.set_volume(
+                self._player.get_volume() - 1
+            )
+            return OK
+        except Exception as e:
+            print(e)
+            return NOT_FOUND

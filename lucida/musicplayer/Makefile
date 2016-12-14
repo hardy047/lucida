@@ -15,7 +15,7 @@ clean:
 	rm -rf lucidaservice lucidatypes
 
 start_server:
-	python asr.py
+	source ${PWD}/../../tools/python_2_7_9/bin/activate && python musicplayer/mplayer_deamon.py && deactivate
 
 docker:
 	cp ../lucidaservice.thrift .; \
